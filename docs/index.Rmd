@@ -1,0 +1,12 @@
+---
+title: "Chloe's Project Homepage"
+author: "Chloe Lang"
+date: "11/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to Chloe's class page! 
