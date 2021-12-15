@@ -1,0 +1,289 @@
+---
+title: "Final Project Pt 1 R Reference"
+author: "Chloe Lang"
+date: "12/16/2021"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+# R Reference Guide {.tabset .tabset-pills}
+
+## Loading Data & Packages 
+
+### The require () function 
+This can be used to load packages from the environment that have already been downloaded. This can be used to find the here() function. 
+```{r}
+require(here)
+```
+
+### library () and here() functions
+The library () function also can pull packages into our environment. This can be done with the "palmerpenguins" package. 
+```{r}
+library(palmerpenguins)
+```
+
+### here() and read.csv()
+The here() function can be used to look for data that is in a specific path or "directory" for each project environment. Read.csv() allows to read excel or data files into r-readable data frames. 
+```{r}
+ginkgo = read.csv(here("ginkgo_data_2021.csv"))
+```
+
+## Data Structures
+
+### c()
+The function c() combines or concatenates its arguments into a vector (a 1-dimensional data structure consisting of 1 or more elements).
+
+* All of the elements must be of the same type.
+  * You cannot combine character and numeric types in the same call to c()
+Here are two examples using numeric and character data types:
+```{r}
+## Create a vector of numbers:
+num_vec  = c(1, 4, 8, 9, 13)
+
+## Create a vector of characters:
+char_vec = c("a", "fish", "data is cool")
+
+```
+I can show the contents of a vector by typing the name of the vector, or using the print() function.
+```{r}
+## Typing the name of the vector into the console prints the contents
+num_vec
+```
+
+```{r}
+## The print () function accomplishes the same task:
+print(char_vec)
+```
+
+### length ()
+Length() gives the set length of vector(s), i.e. the number of entries that can be numerical or categorical. 
+```{r}
+length(num_vec)
+```
+```{r}
+length(char_vec)
+```
+
+### matrix ()
+This function creates a matrix from a given or created set of values into a specific number of rows and columns. Data is often used to fill the contents of a matrix, but matrices may also be created manually via vectors. 
+```{r}
+matrix(num_vec, nrow = 3, ncol = 5, byrow = TRUE)
+```
+
+### data.frame()
+Data frames are tightly grouped collections of  variables, similar to matrices. This is a fundamental structure used in R. Components include columns and rows. Each column contains values of one variable while each row has one set of values from each column.
+```{r}
+## The ginkgo data frame can be observed here: 
+ginkgo 
+```
+We do not have to load our ginkgo data into data frame because when we read it as a csv, the file was converted into a data frame in RStudio. 
+```{r}
+## If needed to create a data frame, we would use the data.frame() function:
+ginkgo_dataframe = data.frame(ginkgo)
+```
+
+The variables and observations within data frames can be explored in a few ways. 
+
+### row() 
+```{r}
+## Shows the number of rows present in the data frame. 
+nrow(ginkgo)
+```
+### ncol()
+```{r}
+##  Shows the number of columns present in the data frame. 
+ncol(ginkgo)
+```
+  
+### dim()
+```{r}
+## Shows the dimension of the data frame by row and column. 
+dim(ginkgo)
+```
+
+## Subsetting
+Subsetting is used to filter out unwanted parts of a data frame, allowing to select only particular parts of the data frame. 
+
+### $
+Subset (or select) a data frame by name. 
+```{r}
+## Selecting the column containing the petiole length. 
+head(ginkgo$petiole_length)
+```
+
+### []
+Select a data frame by position. 
+```{r}
+## Select the first row.
+head(ginkgo[1,])
+```
+```{r}
+## Select the third column.
+head(ginkgo[,3])
+```
+```{r}
+## Select the element in row 2, column 3.
+ginkgo[2,3]
+```
+
+### subset()
+This function is used to select a certain subset from vectors, matrices, or in this case, data frames. 
+```{r}
+## Retrieve all data for Adelie penguin data from the "palmerpenguins" dataset. 
+head(subset(penguins, species == "Adelie"))
+```
+
+## Numerical Data Exploration 
+
+### Summary()
+A function in R used to display summaries of the reuslts of various model fitting functions. This includes basic statistics such as, minimum, maximum, mean, meadian, and the quartiles. 
+```{r}
+## Summary () function for penguins in "palmerpenguin" data set. 
+summary(penguins)
+```
+
+### Mean()
+Mean gives the mean (or average) of a numerical dataset. For datasets with multiple columns of observations, you must specify which variable you would like to select, or subset. 
+
+Some data sets may be missing values, giving a "NA" message - you must select "na.rm = TRUE" to include columns with missing or omitted data. 
+```{r}
+## Mean bill length observed 
+mean(penguins$bill_length_mm, na.rm = TRUE)
+```
+
+### sd()
+This function produces the standard deviation from a numerical data set. It is the same requirement as mean in which you must specify which column or variable you would like to select. 
+```{r}
+## Std. Dev. of the mean bill length
+sd(penguins$bill_length_mm, na.rm = TRUE)
+```
+
+## Graphical Data Exploration 
+### Scatterplots using the Ginkgo data
+* Scatterplots are created using the plot() function and are a good way of displaying two different variables with another. There are many ways to customize your data to display in the best fitting ways, the arguments include:
+  * col: Specifies the color of the plotted points. Colors     names and ID's can be found using the rgb() and            colors() functions.
+  * pch: Specifics the type of point displayed (EX: star,     circle, square, etc.)
+  * cex: Used to specify the size of the points displayed.
+  * main: The main title of the scatterplot. 
+  * xlab: X-axis title
+  * ylab: Y-axis title
+  * xlim: Sets the minimum & maximum values along the         x-axis. 
+  * ylim: Sets the minimum & maximum values along the        y-axis. 
+```{r}
+plot(ginkgo$max_width, ginkgo$max_depth,
+     main = "Ginkgo Leaf Maximum Depth and Width",
+     xlab = "Max width (mm)",
+     ylab = "Max depth (mm)",
+     col = "deeppink4", 
+     pch = 8, cex = 0.5, 
+     xlim = c(10, 140), 
+     ylim = c(0, 150)
+     )
+```
+
+### Histogram of Penguin Flipper lengths 
+```{r}
+hist(penguins$flipper_length_mm, 
+     breaks = 6, 
+     main = "Histogram of Penguin Flipper Length",
+     xlab = "Flipper Length (mm)",
+     col = "darkseagreen3")
+```
+
+### Boxplots of Ginkgo Data 
+* Ginkgo Petiole Length: 
+```{r}
+boxplot(
+  ginkgo$petiole_length, 
+  main = "Ginkgo Petiole Length",
+  ylab = "Petiole Length (mm)",
+  col = "thistle1"
+)
+```
+
+* Conditional Boxplot
+  * Created by using one of the continuous variables conditioned on the seeds_present column.
+```{r}
+## Conditional boxplot: max width conditioned by whether seeds were present at the time of observation. 
+boxplot(
+  data = ginkgo, max_width ~ seeds_present, 
+  main = "Ginkgo Leaf Width by Presense of Seeds",
+  xlab = "Seeds Present", 
+  ylab = "Ginkgo Max Width (mm)", 
+  names = c("Absent", "Present"),
+  col = c("palevioletred2", "palegreen2")
+)
+```
+  
+### 4-panel Histogram 
+```{r}
+par(mfrow = c(2,2))
+
+hist(ginkgo$max_width, 
+     main = "Histogram of Ginkgo Leaf Width", 
+     xlab = "Max Leaf Width (mm)", 
+     col = "paleturquoise2")
+hist(ginkgo$max_depth, 
+     main = "Histogram of Ginkgo Leaf Depth", 
+     xlab = "Max Leaf Depth (mm)", 
+     col = "plum3")
+hist(ginkgo$notch_depth, 
+     main = "Histogram of Ginkgo Notch Depth", 
+     xlab = "Notch Depth (mm)",
+     col = "skyblue2")
+hist(ginkgo$petiole_length, 
+     main = "Histogram of Ginkgo Petiole Length", 
+     xlab = "Petiole Length(mm)",
+     col = "khaki2")
+```
+
+## Distribution Functions 
+* Distribution Functions are used with data sets and frames to get answers about the probability of certain, specified outcomes. In this class, there are two types of distributions you will work with:
+  * Normal Distribution: When a data set follows a bell-shaped curve with the data being evenly distributed about the mean (center of the data).
+  * Binomial Distribution: This is a discrete type of data  set in which there can only be two possible outcomes. Data is acquired through numbers of trials, where one of two outcomes is recorded. 
+
+### dnorm()
+* Normal density: Probability Density Function 
+```{r}
+## Probability of observing a value of 5, with a mean of 2 and a SD of 1.
+dnorm(5, mean = 2, sd = 1)
+```
+
+### pnorm()
+* Normal Distribution: Cumulative Distribution Function
+```{r}
+## Probability of observing a value of 4 or lower with a mean of 6 and a SD of 3.
+pnorm(q = 4, mean = 6, sd = 3)
+```
+
+### qnorm()
+* Quantile function of the Normal Distribution
+```{r}
+## Probability of lower first quartile (25th percentile) with a mean of 1 and a SD of 1.
+qnorm(p = 0.25, mean = 1, sd = 1)
+```
+
+### dbinom()
+* Binomial density: Probability Density Function 
+```{r}
+## Probability of observing a value of 5 with a trial size of 100, and prob = 0.5
+dbinom(x = 5, size = 100, prob = 0.5)
+```
+
+### pbinom()
+* Binomial Distribution: Cumulative Distribution Function
+```{r}
+## Probability of observing a value of 5 or less with a trial size of 100 and prob of 0.5
+pbinom(q = 4, size = 100, prob = 0.5)
+```
+
+### qbinom()
+* Quantile function of the Normal Distribution
+```{r}
+## 1st quartile (25th percentile) with a trial size of 100, and a prob. = 0.5
+qbinom(p = 0.5, size = 100, prob = 0.5)
+```
+
